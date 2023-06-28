@@ -58,25 +58,41 @@ def auto_submit(driver):
     """
     buttons = driver.find_elements(By.TAG_NAME, "button")
     submits = driver.find_elements(By.TAG_NAME, "submit")
-    if buttons :
+    clicked_identifiers = set()  # Set to keep track of clicked class or id
+    
+    if buttons:
         for button in buttons:
-            button.click()
-            time.sleep(0.5)
-    if submits :
+            button_class = button.get_attribute("class")
+            button_id = button.get_attribute("id")
+            identifier = button_class or button_id
+            if identifier not in clicked_identifiers:
+                button.click()
+                clicked_identifiers.add(identifier)
+                time.sleep(0.5)
+
+    if submits:
         for submit in submits:
-            submit.click()
-            time.sleep(0.5)
+            submit_class = submit.get_attribute("class")
+            submit_id = submit.get_attribute("id")
+            identifier = submit_class or submit_id
+            if identifier not in clicked_identifiers:
+                submit.click()
+                clicked_identifiers.add(identifier)
+                time.sleep(0.5)
+
 def find_links(driver):
     """
     This function finds the links
     """
     links = driver.find_elements(By.TAG_NAME, "a")
-    if links :
+    absolute_links = []
+    if links:
         for link in links:
             relative_link = link.get_attribute("href")
             absolute_link = urljoin(driver.current_url, relative_link)
+            absolute_links.append(absolute_link)
             time.sleep(0.5)
-    return links
+    return absolute_links
 def is_redirect(driver):
     """
     This function checks if the page is redirected after form submission

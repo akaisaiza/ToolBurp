@@ -20,3 +20,4 @@ def proxy_config(url):
     }, options=options)
     driver.get(url)
     time.sleep(5)
+    return driver
