@@ -5,6 +5,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 import time
+import check_validity
+from urllib.parse import urlparse
+
 
 def fill_input(driver):
     """
@@ -90,9 +93,20 @@ def find_links(driver):
         for link in links:
             relative_link = link.get_attribute("href")
             absolute_link = urljoin(driver.current_url, relative_link)
-            absolute_links.append(absolute_link)
-            time.sleep(0.5)
+            if check_validity.check_link_validity(absolute_link):
+                absolute_links.append(absolute_link)
     return absolute_links
+def find_links_with_same_domain(url, links):
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc
+    same_domain_links = []
+
+    for link in links:
+        parsed_link = urlparse(link)
+        if parsed_link.netloc == domain:
+            same_domain_links.append(link)
+
+    return same_domain_links
 def is_redirect(driver):
     """
     This function checks if the page is redirected after form submission
