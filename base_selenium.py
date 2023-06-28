@@ -38,6 +38,18 @@ def fill_input(driver):
             elif input_type == "file":
                 input.send_keys("file.txt")
                 time.sleep(0.5)
+            elif input_type == "date":
+                input.send_keys("2023-06-28")
+                time.sleep(0.5)
+            elif input_type == "time":
+                input.send_keys("10:30")
+                time.sleep(0.5)
+            elif input_type == "color":
+                input.send_keys("#ff0000")
+                time.sleep(0.5)
+            elif input_type == "range":
+                input.send_keys("50")
+                time.sleep(0.5)
 
 def fill_textarea_select(driver):
     """
@@ -57,10 +69,11 @@ def fill_textarea_select(driver):
             time.sleep(0.5)
 def auto_submit(driver):
     """
-    This function auto clicks the button tagname
+    This function auto clicks the button, submit, and a tags
     """
     buttons = driver.find_elements(By.TAG_NAME, "button")
     submits = driver.find_elements(By.TAG_NAME, "submit")
+    links = driver.find_elements(By.TAG_NAME, "a")
     clicked_identifiers = set()  # Set to keep track of clicked class or id
     
     if buttons:
@@ -80,6 +93,16 @@ def auto_submit(driver):
             identifier = submit_class or submit_id
             if identifier not in clicked_identifiers:
                 submit.click()
+                clicked_identifiers.add(identifier)
+                time.sleep(0.5)
+
+    if links:
+        for link in links:
+            link_href = link.get_attribute("href")
+            link_text = link.text
+            identifier = link_href or link_text
+            if identifier not in clicked_identifiers:
+                link.click()
                 clicked_identifiers.add(identifier)
                 time.sleep(0.5)
 
